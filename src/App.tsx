@@ -2,7 +2,15 @@ import React, { Suspense, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { WindowManager, createWindow, useWindowStore } from "@spatialjs/core";
 import { Environment, OrbitControls } from "@react-three/drei";
-import { XR, createXRStore } from "@react-three/xr";
+import {
+  IfInSessionMode,
+  XR,
+  XRPlaneModel,
+  createXRStore,
+  useXRPlanes,
+  XRSpace,
+} from "@react-three/xr";
+import { Root, Text } from "@react-three/uikit";
 import * as THREE from "three";
 import MainMenu from "./components/MainMenu";
 import ArcadeWindow from "./components/ArcadeWindow";
@@ -15,11 +23,11 @@ const store = createXRStore({
   emulate: true,
   frameRate: "high",
   foveation: 100,
+  boundless: true,
 });
 
 const App: React.FC = () => {
   console.log("App component rendered");
-
   useEffect(() => {
     createWindow(ArcadeWindow, {
       id: "arcade",
@@ -96,7 +104,7 @@ const App: React.FC = () => {
           ),
         }}
       >
-        <OrbitControls />
+        {/* <OrbitControls /> */}
         <XR store={store}>
           <Suspense fallback={null}>
             <Environment key="environment" preset="night" background={true} />
@@ -104,8 +112,15 @@ const App: React.FC = () => {
           <Suspense fallback={null}>
             <WindowManager key="window-manager" />
           </Suspense>
+          {/* <IfInSessionMode allow="immersive-ar">
+            <Suspense fallback={null}>
+              <Root>
+                <RedWalls />
+              </Root>
+            </Suspense>
+          </IfInSessionMode> */}
+
           <Suspense fallback={null}>
-            {/* <Room key="room" /> */}
             <Office scale={0.5} position={[0, -1, 0]} />
           </Suspense>
           <ambientLight intensity={0.5} />
@@ -116,6 +131,24 @@ const App: React.FC = () => {
         <button onClick={() => store.enterAR()}>Enter AR</button>
       </div>
     </div>
+  );
+};
+
+const RedWalls: React.FC = () => {
+  const wallPlanes = useXRPlanes("wall");
+  console.log(wallPlanes);
+  return (
+    <>
+      {wallPlanes.map((plane) => (
+        <>
+          <XRSpace space={plane.planeSpace}>
+            <XRPlaneModel plane={plane}>
+              <meshBasicMaterial color="red" />
+            </XRPlaneModel>
+          </XRSpace>
+        </>
+      ))}
+    </>
   );
 };
 

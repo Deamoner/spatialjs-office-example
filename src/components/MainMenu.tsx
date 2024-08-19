@@ -27,13 +27,12 @@ const MainMenu: React.FC = () => {
                 e.stopPropagation();
                 focus(id);
               }}
+              padding={10}
             >
               {!window.disableIcon &&
                 window.icon &&
                 (typeof window.icon === "object" ? (
-                  React.createElement(window.icon, {
-                    marginRight: 10,
-                  })
+                  React.createElement(window.icon, {})
                 ) : (
                   <Image
                     src={window.icon as string}

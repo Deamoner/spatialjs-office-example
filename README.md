@@ -1,4 +1,4 @@
-# SpatialJS Office Window Example
+# SpatialJS Office Windows Example
 
 <p align="center">
   <img src="./assets/main.png" width="500" />
